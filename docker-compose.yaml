@@ -1,0 +1,19 @@
+services:
+  localstack:
+    image: localstack/localstack:2026.11.0
+    container_name: cloud-reliability-localstack
+    ports:
+      - "127.0.0.1:4566:4566"
+    environment:
+      - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?LocalStack token required}
+      - AWS_DEFAULT_REGION=us-east-1
+    healthcheck:
+      test:
+        - CMD
+        - python3
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:4566/_localstack/health', timeout=2)"
+      start_period: 30s
+      interval: 10s
+      timeout: 5s
+      retries: 12
